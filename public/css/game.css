@@ -1,0 +1,1073 @@
+/* M4–M7 — Game screen styles (canvas, chat, scoreboard) — skribbl.io inspired */
+
+.game-layout {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  min-height: 100vh;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ── Top bar ── */
+.game-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-dim);
+  flex-wrap: wrap;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.game-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--neon-green);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  text-shadow: 0 0 12px var(--glow-green);
+}
+
+.round-badge {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: var(--bg-card-2);
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+}
+
+.topbar-center {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.drawer-info {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.drawer-suffix {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+.guess-this-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+}
+
+.word-blanks {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  letter-spacing: 6px;
+  color: var(--neon-yellow);
+  text-shadow: 0 0 16px var(--glow-yellow);
+}
+
+.word-category {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.timer-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-card-2);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.timer-wrap.low {
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 12px var(--glow-pink);
+}
+
+.timer-wrap .timer-icon {
+  color: var(--neon-yellow);
+  flex-shrink: 0;
+}
+
+.timer-display {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--neon-green);
+}
+
+/* ── Main body (sidebar + canvas + chat) ── */
+.game-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 240px 1fr 300px;
+  gap: 0;
+  min-height: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Tablet: scoreboard on top as horizontal strip, canvas + chat side by side */
+@media (max-width: 1024px) {
+  .game-body {
+    grid-template-columns: 1fr minmax(240px, 320px);
+    grid-template-rows: auto 1fr;
+  }
+  .scoreboard-sidebar {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    max-height: 100px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: none;
+    border-bottom: 1px solid var(--border-dim);
+    padding: 12px 16px;
+  }
+  .scores-list {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+  .score-row {
+    flex-shrink: 0;
+    min-width: 140px;
+  }
+  .canvas-area {
+    grid-row: 2;
+    min-width: 0;
+  }
+  .chat-panel {
+    grid-row: 2;
+    min-height: 200px;
+    border-left: 1px solid var(--border-dim);
+  }
+}
+
+/* Mobile: single column — scoreboard, canvas, then chat */
+@media (max-width: 768px) {
+  .game-body {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+  .scoreboard-sidebar {
+    grid-row: 1;
+    max-height: 88px;
+    border-bottom: 1px solid var(--border-dim);
+  }
+  .score-row {
+    min-width: 120px;
+  }
+  .canvas-area {
+    grid-row: 2;
+    padding: 12px 10px;
+    min-height: 0;
+  }
+  .canvas-wrapper,
+  .canvas-wrapper canvas {
+    max-width: 100%;
+  }
+  .chat-panel {
+    grid-row: 3;
+    grid-column: 1;
+    min-height: 220px;
+    max-height: 38vh;
+    border-left: none;
+    border-top: 1px solid var(--border-dim);
+    flex-shrink: 0;
+  }
+  .chat-messages {
+    min-height: 100px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .chat-input-row {
+    flex-wrap: nowrap;
+  }
+  .chat-text-input {
+    min-width: 0;
+  }
+  /* Top bar */
+  .game-topbar {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+  .topbar-center {
+    order: 1;
+    width: 100%;
+    flex-basis: 100%;
+  }
+  .topbar-left,
+  .topbar-right {
+    order: 0;
+  }
+  .word-blanks {
+    font-size: 1.1rem;
+    letter-spacing: 4px;
+  }
+  .timer-wrap {
+    padding: 8px 14px;
+  }
+  .timer-display {
+    font-size: 1.25rem;
+  }
+  /* Toolbar */
+  .toolbar {
+    gap: 8px;
+    padding: 10px 0;
+  }
+  .color-swatch {
+    width: 24px;
+    height: 24px;
+  }
+  .brush-btn {
+    width: 32px;
+    height: 32px;
+  }
+  .tool-btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .game-topbar {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  .topbar-left,
+  .topbar-right {
+    justify-content: center;
+  }
+  .round-badge {
+    font-size: 0.8rem;
+  }
+  .drawer-info {
+    font-size: 0.85rem;
+  }
+  .chat-header {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+  .chat-input-area {
+    padding: 10px 12px;
+  }
+  .btn-emoji-toggle,
+  .btn-chat-send {
+    width: 36px;
+    height: 36px;
+  }
+  .chat-text-input {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+  .scoreboard-sidebar {
+    max-height: 72px;
+    padding: 8px 12px;
+  }
+  .score-row {
+    padding: 6px 10px;
+    min-width: 100px;
+  }
+  .score-row img {
+    width: 28px;
+    height: 28px;
+  }
+  .score-row .score-name {
+    font-size: 0.8rem;
+  }
+}
+
+/* ── Scoreboard sidebar ── */
+.scoreboard-sidebar {
+  background: var(--bg-card);
+  border-right: 1px solid var(--border-dim);
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.sidebar-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scores-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-card-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.score-row.is-drawer {
+  background: rgba(57,255,20,0.12);
+  border-color: rgba(57,255,20,0.4);
+  box-shadow: 0 0 12px var(--glow-green);
+}
+
+.score-row.is-you {
+  background: rgba(255,230,0,0.08);
+  border-color: rgba(255,230,0,0.25);
+}
+
+.score-row img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.score-rank {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  min-width: 24px;
+}
+
+.score-row .score-name { font-weight: 700; font-size: 0.9rem; color: var(--text-primary); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.score-row .score-value { font-family: var(--font-mono); font-weight: 800; color: var(--neon-green); flex-shrink: 0; }
+
+/* Score list items (player doodle + name + points) */
+.score-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg-card-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.score-item.is-drawing {
+  background: rgba(57,255,20,0.12);
+  border-color: rgba(57,255,20,0.4);
+  box-shadow: 0 0 12px var(--glow-green);
+}
+.score-item.correct {
+  border-color: rgba(57,255,20,0.5);
+}
+.score-item.is-you {
+  background: rgba(255,230,0,0.1);
+  border-color: rgba(255,230,0,0.35);
+}
+.score-item .score-avatar-sm,
+.score-item img.score-avatar-sm {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--border-subtle);
+}
+.score-item .score-avatar-emoji {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 2px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+.score-item .score-info {
+  flex: 1;
+  min-width: 0;
+}
+.score-item .score-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.score-item .score-pts {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: var(--neon-green);
+}
+.score-item {
+  position: relative;
+}
+
+.score-item .score-delta {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--neon-yellow);
+  animation: scorePop 0.4s ease;
+}
+@keyframes scorePop {
+  from { transform: scale(1.2); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Score card lift animation when points increase */
+.score-item-gained {
+  animation: scoreCardLift 0.5s ease-out;
+}
+@keyframes scoreCardLift {
+  0%   { transform: translateY(0) scale(1); }
+  25%  { transform: translateY(-6px) scale(1.02); }
+  50%  { transform: translateY(-2px) scale(1.01); }
+  75%  { transform: translateY(-3px) scale(1.01); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* ── Canvas area (no scroll — fixed height; only chat scrolls) ── */
+.canvas-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  min-height: 0;
+  background: var(--bg-main);
+  overflow: hidden;
+}
+
+/* Your Word: compact chip in top-right of whiteboard (drawer only) */
+.your-word-banner {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-width: 220px;
+  background: var(--bg-card);
+  border: 1px solid var(--neon-green);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  box-shadow: 0 0 16px var(--glow-green);
+}
+
+.your-word-banner-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.your-word-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.your-word-text {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--neon-green);
+  line-height: 1.2;
+}
+
+.your-word-cat {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.your-word-banner .no-type-warning {
+  font-size: 0.7rem;
+  color: var(--neon-pink);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* Canvas frame: fills available space, no empty gap behind board */
+.canvas-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1 1 auto;
+  margin-bottom: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.canvas-reactions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.reaction-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--border-subtle);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reaction-btn:hover {
+  transform: scale(1.1);
+}
+
+.reaction-like:hover,
+.reaction-like.active {
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+  box-shadow: 0 0 14px var(--glow-green);
+}
+
+.reaction-dislike:hover,
+.reaction-dislike.active {
+  border-color: var(--neon-pink);
+  color: var(--neon-pink);
+  box-shadow: 0 0 14px var(--glow-pink);
+}
+
+.reaction-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.canvas-wrapper {
+  position: relative;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: min(960px, 92vw);
+  min-height: 280px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 3px solid var(--border-subtle);
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.05),
+    0 8px 32px rgba(0,0,0,0.4),
+    0 0 40px rgba(57,255,20,0.08);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.canvas-wrapper:focus-within,
+.canvas-wrapper:hover {
+  border-color: rgba(57,255,20,0.3);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.05),
+    0 12px 40px rgba(0,0,0,0.5),
+    0 0 50px rgba(57,255,20,0.12);
+}
+
+/* Canvas fills entire whiteboard so drawing works everywhere */
+.canvas-wrapper canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: crosshair;
+}
+
+.watching-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 12px 16px;
+}
+
+.watching-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--bg-card);
+  border: 2px solid var(--neon-yellow);
+  border-radius: var(--radius-full);
+  font-weight: 800;
+  color: var(--neon-yellow);
+  box-shadow: 0 0 20px var(--glow-yellow);
+}
+
+/* ── Toolbar ── */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.toolbar-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.toolbar-row-tools {
+  flex: 0 0 auto;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--border-subtle);
+}
+
+.color-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border-subtle);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.color-swatch:hover,
+.color-swatch.selected {
+  transform: scale(1.15);
+  border-color: var(--neon-green);
+  box-shadow: 0 0 10px var(--glow-green);
+}
+
+.brush-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brush-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+
+.brush-label svg {
+  width: 18px;
+  height: 18px;
+}
+
+.brush-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.brush-btn .brush-icon {
+  color: currentColor;
+}
+
+.brush-icon-sm { width: 8px; height: 8px; }
+.brush-icon-md { width: 14px; height: 14px; }
+.brush-icon-lg { width: 20px; height: 20px; }
+.brush-icon-xl { width: 26px; height: 26px; }
+
+.brush-btn:hover,
+.brush-btn.selected {
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+}
+
+.brush-dot {
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: var(--bg-card);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tool-btn:hover {
+  border-color: var(--neon-blue);
+  color: var(--neon-blue);
+}
+
+.tool-btn.danger:hover {
+  border-color: var(--neon-pink);
+  color: var(--neon-pink);
+}
+
+/* ── Chat panel ── */
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border-left: 1px solid var(--border-dim);
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.chat-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-dim);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+/* Only this section scrolls vertically; whiteboard stays fixed */
+.chat-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.chat-msg {
+  font-size: 0.9rem;
+  padding: 10px 14px;
+  background: var(--bg-card-2);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--border-subtle);
+  transition: background 0.15s;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+.chat-msg.system {
+  text-align: center;
+  font-style: italic;
+  color: var(--text-muted);
+  border-left-color: var(--neon-yellow);
+  background: rgba(255,230,0,0.06);
+}
+
+.chat-msg.guess-correct {
+  border-left-color: var(--neon-green);
+  background: rgba(57,255,20,0.08);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Guess feedback: partial vs wrong (message only to guesser) */
+.chat-msg.chat-msg-feedback-partial {
+  border-left-color: var(--neon-yellow);
+  background: rgba(255,230,0,0.12);
+}
+
+.chat-msg-system.guess-partial {
+  color: var(--neon-yellow);
+  font-weight: 700;
+}
+
+.chat-msg.chat-msg-feedback-wrong {
+  border-left-color: var(--neon-pink);
+  background: rgba(255,20,80,0.12);
+}
+
+.chat-msg-system.guess-wrong {
+  color: var(--neon-pink);
+  font-weight: 700;
+}
+
+.chat-input-area {
+  flex-shrink: 0;
+  padding: 12px;
+  border-top: 1px solid var(--border-dim);
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.btn-emoji-toggle,
+.btn-chat-send {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card-2);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-emoji-toggle:hover,
+.btn-chat-send:hover {
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+}
+
+.chat-text-input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  background: var(--bg-input);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.chat-text-input:focus {
+  border-color: var(--neon-green);
+}
+
+.drawing-mode-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Round overlay ── */
+.round-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.round-overlay-card {
+  background: var(--bg-card);
+  border: 2px solid var(--neon-yellow);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 0 40px var(--glow-yellow);
+}
+
+.overlay-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--neon-yellow);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.overlay-word {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--neon-green);
+  margin-bottom: 16px;
+}
+
+.overlay-scores {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Feather icons next to text */
+.game-logo svg, .sidebar-title svg, .your-word-label svg, .chat-header svg,
+.drawer-info svg, .watching-chip svg, .no-type-warning svg, .overlay-title svg,
+.tool-btn svg, .btn-emoji-toggle svg, .btn-chat-send svg, .drawing-mode-label svg {
+  vertical-align: middle;
+  margin-right: 4px;
+  width: 18px;
+  height: 18px;
+}
+#drawerAvatar svg { width: 20px; height: 20px; }
+.timer-wrap .timer-icon { width: 22px; height: 22px; margin-right: 0; }
+
+/* Chat: Emoji picker — WhatsApp-style panel above input */
+.emoji-picker {
+  display: none;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px 12px 0 0;
+  margin: -12px -12px 10px -12px;
+  padding: 12px 10px 10px;
+  max-height: 200px;
+  overflow: hidden;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.25);
+}
+
+.emoji-picker.open {
+  display: flex;
+  animation: emojiPanelSlide 0.2s ease-out;
+}
+
+@keyframes emojiPanelSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.emoji-picker-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  padding: 0 4px 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 8px;
+}
+
+.emoji-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+  gap: 2px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  flex: 1;
+  min-height: 0;
+}
+
+.emoji-btn-item,
+.emoji-picker-btn,
+.icon-picker-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 1.4rem;
+  transition: background 0.12s, transform 0.12s;
+}
+
+.emoji-btn-item:hover,
+.emoji-picker-btn:hover,
+.icon-picker-btn:hover {
+  background: rgba(255,255,255,0.1);
+  transform: scale(1.12);
+}
+
+.icon-picker-btn svg {
+  width: 18px;
+  height: 18px;
+}
+.chat-inline-icon {
+  display: inline;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  margin: 0 1px;
+}
+.avatar-fallback-svg,
+.avatar-fallback-icon,
+.score-avatar-emoji svg {
+  width: 100%;
+  height: 100%;
+  max-width: 24px;
+  max-height: 24px;
+}

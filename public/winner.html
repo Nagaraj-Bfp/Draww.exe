@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Winner · Draww.exe</title>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/winner.css" />
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body>
+  <!-- Winner background image (different theme — use background-winner.png) -->
+  <div class="winner-bg" aria-hidden="true"></div>
+  <div class="grid-bg"></div>
+
+  <!-- Winner theme audio (triumphant fanfare) -->
+  <audio id="winnerAudio" loop preload="auto" aria-label="Winner theme">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2000-victory-fanfare-2000.mp3" type="audio/mpeg" />
+  </audio>
+
+  <main class="winner-layout">
+
+    <!-- Winner Banner -->
+    <div class="winner-banner">
+      <div class="winner-crown"><i data-feather="award"></i></div>
+      <div class="winner-title" id="winnerTitle">Loading...</div>
+      <div class="winner-subtitle" id="winnerSubtitle">Draww.exe 2026</div>
+    </div>
+
+    <!-- Final Scoreboard -->
+    <div class="final-scoreboard">
+      <div class="final-scoreboard-title"><i data-feather="bar-chart-2"></i> Final Standings</div>
+      <div class="final-scores-list" id="finalScoresList"></div>
+    </div>
+
+    <!-- Memory Grid -->
+    <div class="memory-section" id="memorySection">
+      <div class="memory-header">
+        <div class="memory-title"><i data-feather="image"></i> Factory Memory Wall</div>
+        <div class="memory-subtitle">All the masterpieces from today's session</div>
+      </div>
+      <div class="memory-grid" id="memoryGrid"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="winner-actions">
+      <button class="btn btn-primary" id="btnPlayAgain"><i data-feather="refresh-cw"></i> Play Again</button>
+      <button class="btn btn-secondary" id="btnSaveGrid"><i data-feather="download"></i> Save Memory Wall</button>
+    </div>
+
+  </main>
+
+  <!-- Confetti canvas -->
+  <canvas id="confettiCanvas" style="position:fixed;inset:0;pointer-events:none;z-index:999;"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="js/winner.js"></script>
+  <script>
+    feather.replace({ width: 20, height: 20 });
+    (function() {
+      var el = document.getElementById('winnerAudio');
+      if (el) {
+        el.volume = 0.4;
+        el.play().catch(function() {});
+      }
+    })();
+  </script>
+</body>
+</html>

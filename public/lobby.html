@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lobby · Draww.exe</title>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/lobby.css" />
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body>
+  <!-- Lobby background image (different from index — use background-lobby.png) -->
+  <div class="lobby-bg" aria-hidden="true"></div>
+  <div class="grid-bg"></div>
+
+  <main class="lobby-wrapper">
+
+    <!-- Left: Rules of the Game -->
+    <aside class="lobby-aside lobby-aside-left">
+      <div class="lobby-rules-box">
+        <div class="info-box-header">
+          <i data-feather="book-open"></i>
+          <h2>Rules of the Game</h2>
+        </div>
+        <ul class="rules-list">
+          <li><i data-feather="repeat"></i><span>Multiple rounds; each round one player draws, others guess.</span></li>
+          <li><i data-feather="edit-3"></i><span>Draw only with pictures — no letters or numbers.</span></li>
+          <li><i data-feather="message-circle"></i><span>Guessers type guesses in the chat. Fast correct guess = more points.</span></li>
+          <li><i data-feather="award"></i><span>Drawer earns points when someone guesses; highest total wins.</span></li>
+          <li><i data-feather="shield"></i><span>Don’t say or type the word if you’re the drawer!</span></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Center: Original lobby (exact same design) -->
+    <div class="lobby-main">
+      <div class="lobby-topbar">
+        <div class="lobby-logo"><i data-feather="pen-tool"></i> Draww.exe</div>
+        <div class="lobby-room-id" id="roomIdDisplay">Room: —</div>
+      </div>
+
+      <div class="share-box">
+        <span class="share-label"><i data-feather="link"></i> Invite Link</span>
+        <div class="share-link-text" id="shareLinkText">Generating...</div>
+        <button class="btn-copy" id="btnCopy"><i data-feather="copy"></i> Copy</button>
+      </div>
+
+      <div class="lobby-card">
+      <div class="lobby-card-header">
+        <div class="lobby-card-title">Players in the Factory</div>
+        <div class="player-count-badge" id="playerCountBadge">0 / 5 players</div>
+      </div>
+
+      <!-- Players -->
+      <div class="players-area">
+        <div class="players-grid" id="playersGrid">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="lobby-controls">
+
+        <!-- Game settings (host only) -->
+        <div class="lobby-settings" id="hostSettings" style="display:none;">
+          <div class="setting-item">
+            <i data-feather="repeat"></i> Rounds:
+            <select id="roundsSelect">
+              <option value="2">2 rounds</option>
+              <option value="3" selected>3 rounds</option>
+              <option value="4">4 rounds</option>
+              <option value="5">5 rounds</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <i data-feather="clock"></i> Draw time:
+            <select id="timerSelect">
+              <option value="60">60 sec</option>
+              <option value="90" selected>90 sec</option>
+              <option value="120">120 sec</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Host view -->
+        <div id="hostControls" style="width:100%; display:none;">
+          <p class="min-player-warn" id="minPlayerWarn" style="display:none;">
+            <i data-feather="zap"></i> Need at least 2 players to start
+          </p>
+          <button class="btn btn-primary btn-start" id="btnStart" disabled>
+            <i data-feather="play"></i> Start the Game!
+          </button>
+        </div>
+
+        <!-- Guest view -->
+        <div id="guestControls" style="display:none;">
+          <div class="waiting-message">
+            <span><i data-feather="loader"></i> Waiting for host to start</span>
+            <span class="waiting-dots">
+              <span>.</span><span>.</span><span>.</span>
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    </div>
+
+    <!-- Right: How to Play -->
+    <aside class="lobby-aside lobby-aside-right">
+      <div class="lobby-how-to-box">
+        <div class="info-box-header">
+          <i data-feather="compass"></i>
+          <h2>How to Play</h2>
+        </div>
+        <div class="how-to-steps">
+          <div class="how-to-step">
+            <span class="step-num">1</span>
+            <div class="step-icon-wrap"><i data-feather="users"></i></div>
+            <p>Wait for the host to start. One player will be chosen to draw.</p>
+          </div>
+          <div class="how-to-step">
+            <span class="step-num">2</span>
+            <div class="step-icon-wrap"><i data-feather="image"></i></div>
+            <p>Drawer gets a secret word — illustrate it using brush, colors & eraser.</p>
+          </div>
+          <div class="how-to-step">
+            <span class="step-num">3</span>
+            <div class="step-icon-wrap"><i data-feather="type"></i></div>
+            <p>Everyone else types guesses in chat. Blanks and hints appear over time.</p>
+          </div>
+          <div class="how-to-step">
+            <span class="step-num">4</span>
+            <div class="step-icon-wrap"><i data-feather="trending-up"></i></div>
+            <p>Score points for correct guesses. After all rounds, the top score wins!</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Toast -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/lobby.js"></script>
+  <script>feather.replace({ width: 18, height: 18 });</script>
+</body>
+</html>

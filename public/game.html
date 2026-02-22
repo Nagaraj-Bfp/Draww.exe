@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Game · Draww.exe</title>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/game.css" />
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+<div class="game-layout">
+
+  <!-- Top Game Bar -->
+  <div class="game-topbar">
+    <div class="topbar-left">
+      <div class="game-logo"><i data-feather="home"></i></div>
+      <div class="round-badge" id="roundBadge">Round 1 of 3</div>
+    </div>
+
+    <div class="topbar-center">
+      <div class="drawer-info" id="drawerInfo">
+        <span id="drawerAvatar"><i data-feather="edit-3"></i></span>
+        <span id="drawerName">Loading...</span>
+        <span class="drawer-suffix">is drawing</span>
+      </div>
+      <div class="guess-this-label">Guess this</div>
+      <div class="word-blanks" id="wordBlanks">_ _ _ _ _</div>
+      <div class="word-category" id="wordCategory">Category: —</div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="timer-wrap" title="Time left">
+        <i data-feather="clock" class="timer-icon"></i>
+        <span class="timer-display" id="timerDisplay">90</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Body -->
+  <div class="game-body">
+
+    <!-- Scoreboard Sidebar -->
+    <aside class="scoreboard-sidebar">
+      <div class="sidebar-title"><i data-feather="award"></i> Scores</div>
+      <div class="scores-list" id="scoresList"></div>
+    </aside>
+
+    <!-- Canvas Area -->
+    <main class="canvas-area">
+
+      <!-- Canvas with skribbl-style frame -->
+      <div class="canvas-frame">
+        <div class="canvas-reactions" id="canvasReactions" style="display:none;">
+          <button type="button" class="reaction-btn reaction-like" id="btnLike" title="Like"><i data-feather="thumbs-up"></i></button>
+          <button type="button" class="reaction-btn reaction-dislike" id="btnDislike" title="Dislike"><i data-feather="thumbs-down"></i></button>
+        </div>
+        <div class="canvas-wrapper">
+          <!-- Your Word: top-right on whiteboard (drawer only) -->
+          <div class="your-word-banner" id="yourWordBanner" style="display:none;">
+            <div class="your-word-banner-inner">
+              <div class="your-word-label"><i data-feather="edit-3"></i> Your word</div>
+              <div class="your-word-text" id="yourWordText">—</div>
+              <div class="your-word-cat" id="yourWordCat">—</div>
+            </div>
+            <div class="no-type-warning"><i data-feather="shield"></i> Don't say it!</div>
+          </div>
+          <canvas id="drawCanvas" width="800" height="560"></canvas>
+          <div class="watching-overlay" id="watchingOverlay" style="display:none;">
+            <div class="watching-chip"><i data-feather="eye"></i> Watching</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar" id="toolbar">
+
+        <!-- Colors + Eraser + Clear on one line -->
+        <div class="toolbar-row toolbar-row-tools">
+          <div class="color-grid" id="colorGrid"></div>
+          <button class="tool-btn" id="btnEraser" title="Eraser"><i data-feather="minus-circle"></i> Eraser</button>
+          <button class="tool-btn danger" id="btnClear" title="Clear Canvas"><i data-feather="trash-2"></i> Clear</button>
+        </div>
+
+        <div class="toolbar-divider"></div>
+
+        <!-- Brush Sizes (with icon label) -->
+        <div class="brush-group" id="brushGroup">
+          <span class="brush-label" title="Brush thickness"><i data-feather="sliders"></i></span>
+          <button class="brush-btn selected" data-size="3"  title="Small">
+            <i data-feather="circle" class="brush-icon brush-icon-sm"></i>
+          </button>
+          <button class="brush-btn" data-size="8"  title="Medium">
+            <i data-feather="circle" class="brush-icon brush-icon-md"></i>
+          </button>
+          <button class="brush-btn" data-size="16" title="Large">
+            <i data-feather="circle" class="brush-icon brush-icon-lg"></i>
+          </button>
+          <button class="brush-btn" data-size="28" title="XL">
+            <i data-feather="circle" class="brush-icon brush-icon-xl"></i>
+          </button>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Chat Panel (icons in header/send; emoji picker for messages) -->
+    <aside class="chat-panel">
+      <div class="chat-header">
+        <span><i data-feather="message-circle"></i> Chat & Guess</span>
+        <span id="guessedCount" style="color:var(--neon-green);"></span>
+      </div>
+
+      <div class="chat-messages" id="chatMessages"></div>
+
+      <div class="chat-input-area">
+        <!-- Emoji picker: WhatsApp-style panel above input -->
+        <div class="emoji-picker" id="emojiPicker">
+          <div class="emoji-picker-header">Emoji</div>
+          <div class="emoji-picker-grid" id="emojiPickerGrid"></div>
+        </div>
+
+        <div class="chat-input-row">
+          <button class="btn-emoji-toggle" id="btnEmojiToggle" title="Add emoji"><i data-feather="smile"></i></button>
+          <input
+            type="text"
+            class="chat-text-input"
+            id="chatInput"
+            placeholder="Type your guess here..."
+            maxlength="80"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="btn-chat-send" id="btnChatSend" title="Send"><i data-feather="send"></i></button>
+        </div>
+
+        <div class="drawing-mode-label" id="inputLabel"><i data-feather="edit-3"></i> Guess the word!</div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- Round End Overlay (hidden) -->
+<div class="round-overlay" id="roundOverlay" style="display:none;">
+  <div class="round-overlay-card">
+    <div class="overlay-title" id="overlayTitle"><i data-feather="clock"></i> Time's Up!</div>
+    <div style="color:var(--text-muted); font-size:0.85rem; margin-bottom:8px;">The word was</div>
+    <div class="overlay-word" id="overlayWord">—</div>
+    <div class="overlay-scores" id="overlayScores"></div>
+    <div style="margin-top:16px; color:var(--text-muted); font-size:0.8rem; font-family:var(--font-mono);" id="overlayCountdown">
+      Next round in 4...
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/game.js"></script>
+<script>feather.replace({ width: 18, height: 18 });</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Draww.exe</title>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/landing.css" />
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body>
+
+  <div class="landing-bg" aria-hidden="true"></div>
+  <div class="grid-bg"></div>
+
+  <!-- Nostalgic game theme audio (optional autoplay) -->
+  <audio id="landingTheme" loop preload="auto" aria-label="Background music">
+    <source src="https://assets.mixkit.co/music/preview/mixkit-game-level-music-689.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Floating background (icons instead of emoji) -->
+  <div class="bg-doodles">
+    <span class="bg-doodle" style="top:8%;  left:5%;  animation-delay:0s;"><i data-feather="home"></i></span>
+    <span class="bg-doodle" style="top:15%; right:8%; animation-delay:1.2s;"><i data-feather="zap"></i></span>
+    <span class="bg-doodle" style="top:60%; left:3%;  animation-delay:2.1s;"><i data-feather="edit-3"></i></span>
+    <span class="bg-doodle" style="top:75%; right:5%; animation-delay:0.8s;"><i data-feather="pen-tool"></i></span>
+    <span class="bg-doodle" style="top:40%; left:92%; animation-delay:1.5s;"><i data-feather="cpu"></i></span>
+    <span class="bg-doodle" style="top:88%; left:20%; animation-delay:3s;"><i data-feather="lightbulb"></i></span>
+    <span class="bg-doodle" style="top:30%; left:88%; animation-delay:0.4s;"><i data-feather="trending-up"></i></span>
+  </div>
+
+  <main class="landing-wrapper landing-split">
+    <!-- Left half: Hero -->
+    <section class="landing-hero">
+      <header class="hero-header">
+        <div class="hero-eyebrow">
+          <span class="dot"></span>
+          Bipolar Factory
+        </div>
+        <h1 class="hero-title">
+          <span class="highlight">Hack</span> the
+          <span class="highlight-yellow">Factory</span>
+        </h1>
+        <p class="hero-subtitle">Sketch the System · Draw Fast · Guess Faster · Repeat</p>
+        <button type="button" class="btn-how-to-play" id="btnHowToPlay" aria-label="How to play">
+          <i data-feather="help-circle"></i>
+          <span>How to play</span>
+        </button>
+      </header>
+    </section>
+
+    <!-- Right half: Form -->
+    <section class="landing-form">
+    <div class="main-card">
+
+      <!-- Step 1: Pick Avatar (doodles bound in HTML — no server, no names below) -->
+      <section class="avatar-section">
+        <p class="section-label">01 · Pick your character</p>
+        <div class="avatar-grid" id="avatarGrid">
+          <label class="avatar-card" data-avatar="doo_1.png">
+            <input type="radio" name="avatar" value="doo_1.png" />
+            <div class="avatar-inner">
+              <img src="assets/Images/doo_1.png" alt="" />
+            </div>
+            <div class="avatar-check"><i data-feather="check"></i></div>
+          </label>
+          <label class="avatar-card" data-avatar="doo_2.png">
+            <input type="radio" name="avatar" value="doo_2.png" />
+            <div class="avatar-inner">
+              <img src="assets/Images/doo_2.png" alt="" />
+            </div>
+            <div class="avatar-check"><i data-feather="check"></i></div>
+          </label>
+          <label class="avatar-card" data-avatar="doo_3.png">
+            <input type="radio" name="avatar" value="doo_3.png" />
+            <div class="avatar-inner">
+              <img src="assets/Images/doo_3.png" alt="" />
+            </div>
+            <div class="avatar-check"><i data-feather="check"></i></div>
+          </label>
+          <label class="avatar-card" data-avatar="doo_4.png">
+            <input type="radio" name="avatar" value="doo_4.png" />
+            <div class="avatar-inner">
+              <img src="assets/Images/doo_4.png" alt="" />
+            </div>
+            <div class="avatar-check"><i data-feather="check"></i></div>
+          </label>
+          <label class="avatar-card" data-avatar="doo_5.png">
+            <input type="radio" name="avatar" value="doo_5.png" />
+            <div class="avatar-inner">
+              <img src="assets/Images/doo_5.png" alt="" />
+            </div>
+            <div class="avatar-check"><i data-feather="check"></i></div>
+          </label>
+        </div>
+        <p class="text-center text-muted" id="avatarError"
+           style="margin-top:10px; font-size:0.82rem; color:var(--neon-pink); display:none;">
+          Pick a character first!
+        </p>
+      </section>
+
+      <!-- Step 2: Username -->
+      <section class="username-section">
+        <p class="section-label">02 · Enter your name</p>
+        <div class="input-wrapper">
+          <span class="input-prefix">&gt;_</span>
+          <input type="text" id="usernameInput" class="input-field terminal-input"
+                 placeholder="Whatever name you like" maxlength="25" autocomplete="off" spellcheck="false" />
+        </div>
+        <p class="char-counter"><span id="charCount">0</span>/25</p>
+        <p id="usernameError" style="font-size:0.82rem; color:var(--neon-pink); margin-top:6px; display:none;">
+          Enter a name (1–25 characters)
+        </p>
+      </section>
+
+      <!-- Step 3: Create Room + Join Room (with share link entry) -->
+      <section class="room-actions">
+        <p class="section-label">03 · Create or join a room</p>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btnCreate">
+            <i data-feather="plus-circle"></i>
+            <span>Create Room</span>
+          </button>
+          <button class="btn btn-secondary" id="btnJoinToggle">
+            <i data-feather="link"></i>
+            <span>Join Room</span>
+          </button>
+        </div>
+
+        <!-- Share link (shown after Create Room) -->
+        <div class="share-link-section" id="shareLinkSection">
+          <label class="share-label">Room link (share with others)</label>
+          <div class="share-link-row">
+            <input type="text" id="shareLinkInput" class="input-field" readonly />
+            <button type="button" class="btn btn-copy-link" id="btnCopyLink" title="Copy">
+              <i data-feather="copy"></i>
+            </button>
+            <button type="button" class="btn btn-primary btn-enter-lobby" id="btnEnterLobby">
+              <i data-feather="log-in"></i>
+              <span>Enter Lobby</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Join panel (room code or paste link) -->
+        <div class="join-panel" id="joinPanel">
+          <div class="join-panel-inner">
+            <input type="text" id="roomCodeInput" class="input-field"
+                   placeholder="Paste room link or enter room code" maxlength="120" autocomplete="off" spellcheck="false" />
+            <button class="btn-join-go" id="btnJoinGo">
+              <i data-feather="log-in"></i>
+              <span>Join</span>
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+    </section>
+
+    <footer class="landing-footer">
+      Built with <span class="heart">♥</span> at Bipolar Factory · Hack the Factory 2026
+    </footer>
+  </main>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- How to play popup (shown on first visit + when button clicked) -->
+  <div class="how-to-play-overlay" id="howToPlayOverlay" aria-hidden="true">
+    <div class="how-to-play-modal" role="dialog" aria-labelledby="howToPlayTitle" aria-modal="true">
+      <button type="button" class="how-to-play-close" id="howToPlayClose" aria-label="Close">
+        <i data-feather="x"></i>
+      </button>
+      <h2 class="how-to-play-title" id="howToPlayTitle">How to play</h2>
+      <div class="how-to-play-body">
+        <p><strong>1. Set up</strong> — Pick your character, enter your name, then create a room or join one with the link.</p>
+        <p><strong>2. Lobby</strong> — Wait for everyone to join. The host starts the game when ready.</p>
+        <p><strong>3. Rounds</strong> — Each round one player is the <em>drawer</em>; others are <em>guessers</em>.</p>
+        <p><strong>4. Drawing</strong> — The drawer gets a secret word and sketches it on the whiteboard. No letters or numbers — only pictures.</p>
+        <p><strong>5. Guessing</strong> — Guessers type in the chat. Blanks and hints appear as time runs. Faster correct guesses score more points.</p>
+        <p><strong>6. Scoring</strong> — Guessers earn points for speed; the drawer earns points for each correct guess. Highest total after all rounds wins.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/landing.js"></script>
+  <script>
+    feather.replace({ width: 18, height: 18 });
+    (function() {
+      var audio = document.getElementById('landingTheme');
+      if (audio) {
+        audio.volume = 0.25;
+        document.body.addEventListener('click', function playOnce() {
+          audio.play().catch(function() {});
+          document.body.removeEventListener('click', playOnce);
+        }, { once: true });
+      }
+    })();
+  </script>
+</body>
+</html>
