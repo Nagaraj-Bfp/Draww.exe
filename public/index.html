@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="assets/icons/father.png" />
   <title>Draww.exe</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/landing.css" />
@@ -13,9 +14,9 @@
   <div class="landing-bg" aria-hidden="true"></div>
   <div class="grid-bg"></div>
 
-  <!-- Nostalgic game theme audio (optional autoplay) -->
-  <audio id="landingTheme" loop preload="auto" aria-label="Background music">
-    <source src="https://assets.mixkit.co/music/preview/mixkit-game-level-music-689.mp3" type="audio/mpeg" />
+  <!-- Background music (autoplay) -->
+  <audio id="landingTheme" loop preload="auto" autoplay aria-label="Background music">
+    <source src="/assets/sounds/index_audio.mp3" type="audio/mpeg" />
   </audio>
 
   <!-- Floating background (icons instead of emoji) -->
@@ -188,13 +189,19 @@
     feather.replace({ width: 18, height: 18 });
     (function() {
       var audio = document.getElementById('landingTheme');
-      if (audio) {
-        audio.volume = 0.25;
-        document.body.addEventListener('click', function playOnce() {
-          audio.play().catch(function() {});
-          document.body.removeEventListener('click', playOnce);
-        }, { once: true });
+      if (!audio) return;
+      audio.volume = 0.25;
+      function startBg() { audio.play().catch(function() {}); }
+      startBg();
+      function onFirst() {
+        startBg();
+        document.removeEventListener('click', onFirst);
+        document.removeEventListener('keydown', onFirst);
+        document.removeEventListener('touchstart', onFirst);
       }
+      document.addEventListener('click', onFirst, { once: true });
+      document.addEventListener('keydown', onFirst, { once: true });
+      document.addEventListener('touchstart', onFirst, { once: true });
     })();
   </script>
 </body>

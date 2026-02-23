@@ -271,6 +271,36 @@ body {
 .delay-6 { animation-delay: 0.6s; }
 .delay-7 { animation-delay: 0.7s; }
 
+/* ── Play music button (unlocks background audio) ── */
+.audio-unlock-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9998;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--bg-deep);
+  background: var(--neon-green);
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  box-shadow: 0 0 20px var(--glow-green);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.audio-unlock-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 28px var(--glow-green);
+}
+.audio-unlock-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
 /* ── Toast ── */
 .toast-container {
   position: fixed;

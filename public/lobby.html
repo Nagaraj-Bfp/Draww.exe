@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="assets/icons/father.png" />
   <title>Lobby · Draww.exe</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/lobby.css" />
@@ -12,6 +13,11 @@
   <!-- Lobby background image (different from index — use background-lobby.png) -->
   <div class="lobby-bg" aria-hidden="true"></div>
   <div class="grid-bg"></div>
+
+  <!-- Lobby background music (autoplay) -->
+  <audio id="lobbyTheme" loop preload="auto" autoplay aria-label="Lobby background music">
+    <source src="/assets/sounds/lobby_audio.mp3" type="audio/mpeg" />
+  </audio>
 
   <main class="lobby-wrapper">
 
@@ -146,6 +152,24 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/lobby.js"></script>
-  <script>feather.replace({ width: 18, height: 18 });</script>
+  <script>
+    feather.replace({ width: 18, height: 18 });
+    (function() {
+      var audio = document.getElementById('lobbyTheme');
+      if (!audio) return;
+      audio.volume = 0.25;
+      function startBg() { audio.play().catch(function() {}); }
+      startBg();
+      function onFirst() {
+        startBg();
+        document.removeEventListener('click', onFirst);
+        document.removeEventListener('keydown', onFirst);
+        document.removeEventListener('touchstart', onFirst);
+      }
+      document.addEventListener('click', onFirst, { once: true });
+      document.addEventListener('keydown', onFirst, { once: true });
+      document.addEventListener('touchstart', onFirst, { once: true });
+    })();
+  </script>
 </body>
 </html>

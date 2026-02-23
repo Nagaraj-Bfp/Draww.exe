@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="assets/icons/father.png" />
   <title>Winner · Draww.exe</title>
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/winner.css" />
@@ -13,9 +14,9 @@
   <div class="winner-bg" aria-hidden="true"></div>
   <div class="grid-bg"></div>
 
-  <!-- Winner theme audio (triumphant fanfare) -->
-  <audio id="winnerAudio" loop preload="auto" aria-label="Winner theme">
-    <source src="https://assets.mixkit.co/active_storage/sfx/2000-victory-fanfare-2000.mp3" type="audio/mpeg" />
+  <!-- Winner theme audio (autoplay) -->
+  <audio id="winnerAudio" loop preload="auto" autoplay aria-label="Winner theme">
+    <source src="/assets/sounds/winner_audio.mp3" type="audio/mpeg" />
   </audio>
 
   <main class="winner-layout">
@@ -59,11 +60,20 @@
   <script>
     feather.replace({ width: 20, height: 20 });
     (function() {
-      var el = document.getElementById('winnerAudio');
-      if (el) {
-        el.volume = 0.4;
-        el.play().catch(function() {});
+      var audio = document.getElementById('winnerAudio');
+      if (!audio) return;
+      audio.volume = 0.4;
+      function startBg() { audio.play().catch(function() {}); }
+      startBg();
+      function onFirst() {
+        startBg();
+        document.removeEventListener('click', onFirst);
+        document.removeEventListener('keydown', onFirst);
+        document.removeEventListener('touchstart', onFirst);
       }
+      document.addEventListener('click', onFirst, { once: true });
+      document.addEventListener('keydown', onFirst, { once: true });
+      document.addEventListener('touchstart', onFirst, { once: true });
     })();
   </script>
 </body>
